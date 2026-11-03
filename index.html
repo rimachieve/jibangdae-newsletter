@@ -458,6 +458,11 @@
   .subscribe .btn:hover, .sub-form .btn:hover{ background:#2C302A; }
   .sub-msg{ color:#121411; font-weight:700; }
   .sub-msg.err{ color:#7A1F12; }
+  .sub-cta{ display:inline-flex; align-items:center; gap:8px; font-size:16px; padding:14px 28px !important; text-decoration:none; }
+  .sub-cta span{ transition:transform .2s ease; }
+  .sub-cta:hover span{ transform:translateX(3px); }
+  .subscribe .sub-msg{ font-weight:600; opacity:.8 !important; margin-top:14px !important; }
+  @media (max-width:640px){ .sub-cta{ width:100%; justify-content:center; } }
 
   footer{ color:#6E7266; margin-top:32px; }
 
@@ -758,13 +763,9 @@
     <div class="subscribe">
       <h3>💌 새 글 알림 받기</h3>
       <p>새로운 인터뷰가 올라오면 이메일로 알려드릴게요.</p>
-      <form class="sub-form" id="subForm" novalidate>
-        <label class="sr-only" for="subEmail">이메일 주소</label>
-        <input id="subEmail" name="email" type="email" inputmode="email" autocomplete="email" placeholder="이메일 주소" required>
-        <input class="hp" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <button class="btn" type="submit">구독하기</button>
-      </form>
-      <p class="sub-msg" id="subMsg" role="status" aria-live="polite"></p>
+      <!-- 구독은 스티비(Stibee) 구독 페이지에서 받아요. 주소록: 기본 주소록(528033) -->
+      <a class="btn sub-cta" id="subCta" href="https://page.stibee.com/subscriptions/528033" target="_blank" rel="noopener">구독하기 <span aria-hidden="true">→</span></a>
+      <p class="sub-msg">이메일 주소만 남기면 끝! 언제든 메일 하단에서 수신거부할 수 있어요.</p>
     </div>
   </section>
 
@@ -1036,6 +1037,8 @@ Q. 마지막으로 SNOW 인턴을 꿈꾸는 학생들에게 한마디 부탁드�
   let activeCat = 'all';
 
   (function setupSubscribe(){
+    const cta = document.getElementById('subCta');
+    if(cta) cta.addEventListener('click', () => { if(typeof gtag === 'function') gtag('event', 'subscribe_click'); });
     const form = document.getElementById('subForm');
     if(!form) return;
     const msg = document.getElementById('subMsg');
