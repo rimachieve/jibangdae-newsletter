@@ -1116,8 +1116,12 @@ Q. 마지막으로 SNOW 인턴을 꿈꾸는 학생들에게 한마디 부탁드�
       </div>`;
     document.getElementById('overlay').classList.add('open');
     document.getElementById('closeBtn').onclick = closeDetail;
-    document.getElementById('copyBtn').onclick = ()=> copyLink(id);
+    document.getElementById('copyBtn').onclick = ()=> { copyLink(id); if(typeof gtag === 'function') gtag('event', 'share_interview', { interview_id: it.id, interview_title: it.title }); };
     safeSetHash(id);
+    // 인터뷰별 조회수: GA4에 'view_interview' 이벤트로 기록
+    if(typeof gtag === 'function'){
+      gtag('event', 'view_interview', { interview_id: it.id, interview_title: it.title });
+    }
   }
   function closeDetail(){
     document.getElementById('overlay').classList.remove('open');
