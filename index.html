@@ -477,6 +477,83 @@
   .body-toggle summary::before{ background:var(--sage); color:#121411; }
   .body-toggle ul{ color:var(--ink-soft); }
   .toast{ background:var(--sage); color:#121411; font-weight:800; }
+
+  /* ===== 반응형: 휴대폰·태블릿·PC 모두 같은 기준선에 맞춤 ===== */
+  :root{
+    --gutter:clamp(20px,4vw,48px);
+    --edge:max(var(--gutter), calc((100% - 1100px) / 2));   /* 1100px 컨테이너의 왼쪽 시작점 */
+  }
+  /* 한국어 단어가 중간에서 끊기지 않게 */
+  body{ word-break:keep-all; overflow-wrap:anywhere; }
+  html, body{ overflow-x:hidden; }
+
+  /* 메뉴·본문·히어로 글자를 같은 세로선에 정렬 */
+  .topnav{ max-width:none; padding:20px var(--edge) 0; }
+  .wrap{ max-width:none; padding:0 var(--edge) 90px; }
+  .hero{ padding-left:var(--edge); padding-right:var(--edge); }
+  .hero-inner, .hero-actions{ max-width:none; }
+  /* 넓은 모니터에서 새싹이 화면 끝으로 밀리지 않게 컨테이너 오른쪽에 붙임 */
+  .hero-canvas{ right:max(0px, calc((100% - 1100px) / 2 - 60px)); }
+
+  .detail-actions .icon-btn{ backdrop-filter:blur(6px); background:rgba(18,20,17,0.72); }
+
+  /* 태블릿 이하 */
+  @media (max-width:900px){
+    .hero{ min-height:auto; }
+    .hero-canvas{ opacity:0.55; }
+    .bubble{ width:min(520px,100%); }
+  }
+
+  /* 휴대폰 */
+  @media (max-width:640px){
+    .topnav{ padding-top:16px; }
+    .navlinks{ gap:14px; }
+
+    /* 첫 화면: 글자 → 새싹 그림 → 버튼 순서로 겹치지 않게 */
+    .hero{ --hl:clamp(27px,8.2vw,40px); padding-top:36px; padding-bottom:32px; margin-bottom:28px; }
+    .hero-lines li{ font-size:var(--hl); }
+    /* 문장 5줄(줄높이 1.24) 바로 아래에 그림 배치 */
+    .hero-canvas{ top:calc(36px + var(--hl) * 6.2 + 4px); bottom:auto; right:0; left:0; width:100%; height:290px; opacity:0.95; }
+    .hero-actions{ margin-top:300px; gap:14px; }
+    .hero-pills{ gap:6px; }
+    .pill{ font-size:12.5px; padding:6px 12px; border-width:1.8px; }
+    .bubble{ padding:15px 18px; border-radius:18px; font-size:15px; }
+
+    .intro-panel{ padding:20px 18px; margin-bottom:40px; border-radius:18px; }
+    .intro-panel p{ font-size:14px; }
+
+    .sec-head{ margin-bottom:14px; }
+    .chips{ gap:6px; margin-bottom:18px; }
+    .chip{ font-size:12.5px; padding:6px 12px; border-width:1.8px; }
+
+    .grid{ gap:16px; margin-bottom:48px; }
+    .card-body{ padding:16px 18px; }
+    .card-title{ font-size:17px; }
+
+    .about-card{ padding:20px 18px 22px; margin-bottom:48px; }
+    .about-top{ gap:12px; }
+
+    .subscribe{ border-radius:20px; padding:24px 20px; }
+    .sub-form{ flex-direction:column; gap:10px; }
+    .sub-form input[type=email]{ flex:none; width:100%; padding:13px 16px; font-size:16px; } /* 16px: 아이폰 자동 확대 방지 */
+    .sub-form .btn{ width:100%; padding:13px; }
+
+    /* 글 팝업: 화면 꽉 차게 */
+    .overlay{ padding:0; }
+    .detail{ border-radius:0; border:0; min-height:100%; max-width:none; }
+    .detail-pad{ padding:22px 20px 40px; }
+    .detail-title{ font-size:20px; }
+    .detail-body{ font-size:15px; }
+    .detail-actions{ position:fixed; top:14px; right:14px; z-index:5; }
+    .icon-btn, .detail-close{ width:38px; height:38px; font-size:14px; }
+  }
+
+  /* 아주 작은 휴대폰 (갤럭시 폴드 접은 화면 등) */
+  @media (max-width:360px){
+    .navlinks a{ font-size:12px; }
+    .navlinks{ gap:10px; }
+    .hero{ --hl:25px; }
+  }
 </style>
 </head>
 <body>
@@ -1115,6 +1192,7 @@ Q. 마지막으로 SNOW 인턴을 꿈꾸는 학생들에게 한마디 부탁드�
         <div class="detail-body">${renderBody(it.body)}</div>
       </div>`;
     document.getElementById('overlay').classList.add('open');
+    document.documentElement.style.overflow = 'hidden';   // 팝업 뒤 페이지가 같이 스크롤되지 않게
     document.getElementById('closeBtn').onclick = closeDetail;
     document.getElementById('copyBtn').onclick = ()=> { copyLink(id); if(typeof gtag === 'function') gtag('event', 'share_interview', { interview_id: it.id, interview_title: it.title }); };
     safeSetHash(id);
@@ -1125,6 +1203,7 @@ Q. 마지막으로 SNOW 인턴을 꿈꾸는 학생들에게 한마디 부탁드�
   }
   function closeDetail(){
     document.getElementById('overlay').classList.remove('open');
+    document.documentElement.style.overflow = '';
     safeClearHash();
   }
   document.getElementById('overlay').addEventListener('click', (e)=>{
